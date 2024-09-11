@@ -14,103 +14,50 @@ app.use(morgan('custom')); // Usa o formato personalizado para o log
 // Rota para a documentação Swagger
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
-// Endpoint de cálculo
-/**
- * @openapi
- * /calculate:
- *   get:
- *     summary: Realiza um cálculo simples
- *     parameters:
- *       - name: num1
- *         in: query
- *         description: Primeiro número
- *         required: true
- *         schema:
- *           type: number
- *       - name: num2
- *         in: query
- *         description: Segundo número
- *         required: true
- *         schema:
- *           type: number
- *       - name: operation
- *         in: query
- *         description: Operação matemática a ser realizada
- *         required: true
- *         schema:
- *           type: string
- *           enum: [+, -, x, /]  # Define os valores possíveis para operação
- *     responses:
- *       200:
- *         description: Resultado do cálculo
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 result:
- *                   type: number
- *       400:
- *         description: Erro na solicitação
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- */
-app.get('/calculate', (req, res, next) => {
+
+app.get('/formas', (req, res, next) => {
     try {
-        const { num1, num2, operation } = req.query;
-
-        // Decodifica o parâmetro 'operation' para tratar caracteres especiais
-        const decodedOperation = decodeURIComponent(operation).replace(/\s+/g, '+');
-
-        // Verifica o valor do parâmetro 'operation' recebido
-        console.log(`Received operation: '${operation}'`);
-        console.log(`Decoded operation: '${decodedOperation}'`);
+        const { lado1, lado2,lado3,lado4} = req.query;
 
         // Verifica se todos os parâmetros estão presentes
-        if (num1 === undefined || num2 === undefined || decodedOperation === undefined) {
+        if (lado1 === undefined || lado2 === undefined || lado3 === undefined || lado4 === undefined) {
             throw new Error('Parâmetros insuficientes!');
         }
 
         // Converte os parâmetros para números
-        const number1 = parseFloat(num1);
-        const number2 = parseFloat(num2);
+        const ladon1 = parseFloat(lado1);
+        const ladon2 = parseFloat(lado2);
+        const ladon3 = parseFloat(lado3);
+        const ladon4 = parseFloat(lado4);
 
         // Verifica se os parâmetros são números válidos
-        if (isNaN(number1) || isNaN(number2)) {
+        if (isNaN(ladon1) || isNaN(ladon2) || isNaN(ladon3) || isNaN(ladon4)) {
             throw new Error('Parâmetros inválidos!');
         }
 
         let result;
+        let area;
 
-        // Realiza a operação baseada no parâmetro 'operation'
-        switch (decodedOperation) {
-            case 'add':
-                result = number1 + number2;
-                break;
-            case 'subtract':
-                result = number1 - number2;
-                break;
-            case 'multiply':
-                result = number1 * number2;
-                break;
-            case 'divide':
-                if (number2 === 0) {
-                    throw new Error('Divisão por zero não é permitida!');
-                }
-                result = number1 / number2;
-                break
-            case 'par':
-                result = `${number1} é ${number1 % 2 === 0 ? "par" : "impar"} e ${number2} é ${number2 % 2 === 0 ? "par" : "impar"}`;
-  
-                break;
-            default:
-                throw new Error('Operação inválida!');
+
+        if (ladon1 === ladon2 && ladon2 === ladon3 && ladon3 === ladon4 ) {
+            area=lado1 * lado2;
+            result= `A área do quadrado é de: ${area}`;
+            alert("A forma é um quadrado !!");
+        }else if ((ladon1 === ladon3 && ladon2 === ladon4 && ladon1 !== ladon2) ||
+            (ladon1 == ladon4 && ladon2 == ladon3 && ladon1 !== ladon2)) {
+            area = ladon1 * ladon2;
+            result= `A área do retangulo é de: ${area}`;
+            alert("A forma é um retangulo !!"); 
+        }else if ((ladon1 == ladon2 && ladon4 == ladon3 && ladon1 !==ladon4)) {
+            area =ladon1 * ladon4;
+            result= `A área do retangulo é de: ${area}`;
+            alert("A forma é um retangulo !!"); 
+        }else if ((ladon1 == ladon2  && ladon1 == ladon3 && ladon1!= ladon4)|| 
+           (ladon1 == ladon2 && ladon1== ladon4 && ladon1 != ladon3) ||
+            (ladon1 == ladon4 && ladon1 == ladon3 && ladon1 != ladon2)) {
+            alert("A forma não é um quadrado, nem um retangulo !!"); 
         }
+
 
         res.json({ result });
     } catch (error) {
