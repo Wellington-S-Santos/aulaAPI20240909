@@ -1,6 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
-const { swaggerUi, specs } = require('./swagger'); // Importe a configuração do Swagger
+
 const app = express();
 const port = 3000;
 
@@ -12,7 +12,7 @@ morgan.format('custom', ':remote-addr :method :url :status :response-time ms');
 app.use(morgan('custom')); // Usa o formato personalizado para o log
 
 // Rota para a documentação Swagger
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+
 
 
 app.get('/formas', (req, res, next) => {
@@ -37,29 +37,31 @@ app.get('/formas', (req, res, next) => {
 
         let result;
         let area;
+        let alerta;
+        
 
 
         if (ladon1 === ladon2 && ladon2 === ladon3 && ladon3 === ladon4 ) {
             area=lado1 * lado2;
-            result= `A área do quadrado é de: ${area}`;
-            alert("A forma é um quadrado !!");
+            result= `A forma é um quadrado !!                   A área do quadrado é de: ${area}`;
+            alerta=("A forma é um quadrado !!");
         }else if ((ladon1 === ladon3 && ladon2 === ladon4 && ladon1 !== ladon2) ||
             (ladon1 == ladon4 && ladon2 == ladon3 && ladon1 !== ladon2)) {
             area = ladon1 * ladon2;
-            result= `A área do retangulo é de: ${area}`;
-            alert("A forma é um retangulo !!"); 
+            result= `A forma é um retangulo !!                A área do retangulo é de: ${area}`;
+            alerta=("A forma é um retangulo !!"); 
         }else if ((ladon1 == ladon2 && ladon4 == ladon3 && ladon1 !==ladon4)) {
             area =ladon1 * ladon4;
-            result= `A área do retangulo é de: ${area}`;
-            alert("A forma é um retangulo !!"); 
+            result= `A forma é um retangulo !!                A área do retangulo é de: ${area}`;
+            alerta=("A forma é um retangulo !!"); 
         }else if ((ladon1 == ladon2  && ladon1 == ladon3 && ladon1!= ladon4)|| 
            (ladon1 == ladon2 && ladon1== ladon4 && ladon1 != ladon3) ||
             (ladon1 == ladon4 && ladon1 == ladon3 && ladon1 != ladon2)) {
-            alert("A forma não é um quadrado, nem um retangulo !!"); 
+            result=("A forma não é um quadrado, nem um retangulo !!"); 
         }
 
-
-        res.json({ result });
+        
+        res.json({ alerta,result });
     } catch (error) {
         next(error); // Passa o erro para o middleware de tratamento
     }
